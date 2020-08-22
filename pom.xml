@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.3.0.RELEASE</version>
+    <relativePath/> <!-- lookup parent from repository -->
+  </parent>
+
+  <groupId>org.example</groupId>
+  <artifactId>packagetest</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <packaging>war</packaging>
+
+  <name>packagetest</name>
+  <!-- FIXME change it to the project's website -->
+  <url>http://www.example.com</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+    <java.version>1.8</java.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <dependency><!--打war包时 设置将内嵌容器的依赖标记为provide-->
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-tomcat</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>2.3.0.RELEASE</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal> <!--可依赖 加这句可以打包出一个可供其他项目依赖的jar包 解压出的目录没有springboot依赖，因为不需要启动，只需向其他项目提供本身特有的代码-->
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <classifier>exec</classifier><!--可执行 classifier指定可执行jar的名字，默认的jar则作为可被其他程序依赖的artifact 打包就会生成两个jar 如不加这句则会生成默认的可执行jar包 上面的可依赖不会生成-->
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>lib</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal> <!--指定打成的包 如jar包 或 war包-->
+            </goals>
+            <configuration>
+              <classifier>lib</classifier>    <!--指定这个排除文件的jar包的名称-->
+              <excludes> <!--排除文件-->
+                <exclude>application.properties</exclude> <!--排除application.properties文件 因为是提供给其他项目的依赖 所以不需要配置文件-->
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
